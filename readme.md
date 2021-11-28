@@ -1,4 +1,5 @@
-<H2>~~reminder API~~<br>
+<H2>
+~~reminder API~~<br>
 pill API<br>
 ~~회원가입 API~~<br>
 ~~JWT 토큰~~<br>
@@ -6,4 +7,5 @@ pill API<br>
 
 배포(미정)<br>
 도커 vs VM<br>
+</h2>
 
