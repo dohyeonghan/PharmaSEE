@@ -18,7 +18,7 @@ SECRET_KEY = 'k%7#n5zck+c5pq&809oz#xdn*waz^p^@veo!#2^dw&^275+(1@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # local apps
     'pharmasee',
     'accounts',
+    'nugu',
 ]
 
 MIDDLEWARE = [
@@ -128,19 +129,43 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
-    ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication'],
-}
+# REST_FRAMEWORK = {
+#     'DEFAULT_PERMISSION_CLASSES': [
+#         'rest_framework.permissions.IsAuthenticated',
+#     ],
+#     'DEFAULT_AUTHENTICATION_CLASSES': [
+#         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+#         'rest_framework.authentication.SessionAuthentication',
+#         'rest_framework.authentication.BasicAuthentication',
+#         ],
+# }
 
-JWT_AUTH = {
-    'JWT_SECRET_KEY': SECRET_KEY, #FIXME: JWT_SECRET_KEY
-    'JWT_ALGORITHM': 'HS256',
-    'JWT_ALLOW_REFRESH':True,
-    'JWT_EXPIRATION_DELTA':timedelta(days=7),
-    'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=28),
-}
+# JWT_AUTH = {
+#     'JWT_SECRET_KEY': SECRET_KEY, #FIXME: JWT_SECRET_KEY
+#     'JWT_ALGORITHM': 'HS256',
+#     'JWT_ALLOW_REFRESH':True,
+#     'JWT_EXPIRATION_DELTA':timedelta(days=7),
+#     'JWT_REFRESH_EXPIRATION_DELTA': timedelta(days=28),
+# }
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
