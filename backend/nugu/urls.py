@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import get_nugu_request
+from .views import answer_taken_pills
 
 urlpatterns = [
-    path('', get_nugu_request, name='nugu_response')
+    path('answer.taken_pills', answer_taken_pills, name='ans_taken_pills')
 ]

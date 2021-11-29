@@ -2,29 +2,34 @@ from pharmasee.models import Reminder, Pill
 from pharmasee.serializers import PillSerializer
 from accounts.models import User
 
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from django.http import Http404
-import json # 직접 request.data 를 parse하기 위해 필요
+from rest_framework import status
+from rest_framework.decorators import api_view
+# from rest_framework.permissions import IsAuthenticated
+# from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework.response import Response
+# from rest_framework import exceptions
+# from rest_framework.exceptions import APIException
+# from django.http import Http404
 
-@api_view(['GET'])
-# @permission_classes((IsAuthenticated, ))
-# @authentication_classes((JSONWebTokenAuthentication, ))
-def get_nugu_request(request, foramt=None):
-    if request.method == 'GET':
-        print("연결 성공")
-
-        action = request.query_params['action']
+@api_view(['POST'])
+def answer_taken_pills(request):
+    try:
+        version = request.data.get('version')
+        action = request.data.get('action')
         action_name = action.get('actionName')
+        params = action.get('parameters')
+        # output = dict(zip(params.keys(), [val.get('value') for val in params.values()]))
+        output = dict(zip(params.keys(), ["killme" for val in params.values()]))
+    except:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        if action_name == "ask.not_taken_pills":
-            answer_not_taken_pills(request)
+    if action_name != "answer.taken_pills":
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
-def answer_not_taken_pills(request):
-    # context = {
-    #     "resultCode": "OK",
-    #     "output": request.
-    # }
-
-    print(request.data)
+    context = {
+        "version": version,
+        "resultCode": "OK",
+        "output": output,
+        "directives":[]
+    }
+    return Response(context)
