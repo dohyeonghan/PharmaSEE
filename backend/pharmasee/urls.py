@@ -5,6 +5,7 @@ from . import views
 
 router = DefaultRouter()
 router.register('pills', views.PillViewSet)
+router.register('reminders', views.ReminderViewSet)
 router.urls
 
 urlpatterns =[
