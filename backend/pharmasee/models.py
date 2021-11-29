@@ -25,14 +25,15 @@ class Pill(TimestampedModel):
 class Reminder(TimestampedModel):
     title = models.CharField(max_length=100)
     user_id = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name="user_id", on_delete=models.CASCADE
+        settings.AUTH_USER_MODEL, related_name="reminders", on_delete=models.CASCADE
     )
     pill_id = models.ForeignKey(Pill, on_delete=models.CASCADE)
     dose = models.CharField(max_length=100)
 
     when_to_take = models.TimeField(auto_now=False)
     taken_time = models.TimeField(auto_now=False)
-    is_taken_today = models.BooleanField()
+    is_taken_today = models.BooleanField(default=False)
+    dose_taken_today = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title #고민
