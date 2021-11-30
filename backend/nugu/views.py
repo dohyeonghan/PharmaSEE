@@ -1,3 +1,4 @@
+from rest_framework import response
 from pharmasee.models import Reminder, Pill
 from pharmasee.serializers import PillSerializer
 from accounts.models import User
@@ -54,7 +55,7 @@ def answer_taken_pills(request):
         context['output']['status_mesg'] = status_mesg
         return Response(context)
     
-    qs_taken = Reminder.objects.filter(is_taken_today=True)
+    qs_taken = Reminder.objects.filter(is_taken_today=True).order_by('taken_time')
     qs_overdue = Reminder.objects.filter(is_taken_today=False).filter(when_to_take__lte=datetime.datetime.now().time())
 
     num_taken = len(qs_taken)
@@ -68,7 +69,7 @@ def answer_taken_pills(request):
         is_late = False
         for obj in qs_taken:
             pill_obj = get_object_or_404(Pill, id=obj.pill_id.id)
-            taken_list +=  str(obj.when_to_take) + '에 ' + pill_obj.name +  " " + str(obj.dose_taken_today) + "정, "
+            taken_list +=  str(obj.taken_time) + '에 ' + pill_obj.name +  " " + str(obj.dose_taken_today) + "정, "
             
             dummy = datetime.date(1, 1, 1)
             when_to_take = datetime.datetime.combine(dummy, obj.when_to_take)
@@ -98,9 +99,12 @@ def answer_taken_pills(request):
 
 @api_view(['POST'])
 def answer_not_taken_pills(request):
-    pprint(request.data)
+    pprint.pprint(request.data)
 
     parse_play_request(request.data)
+
+    if action_name != "answer.not_taken_pills":
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     context = {
         "version": version,
@@ -123,15 +127,49 @@ def answer_not_taken_pills(request):
         context['output']['ask_to_call'] = str(ask_to_call)
         return Response(context)
     
-    qs_overdue = Reminder.objects.filter(when_to_take__lte=datetime.datetime.now().time()).filter(is_taken_today=False)
-    qs_scheduled = Reminder.objects.filter(when_to_take_gt=datetime.datetime.now().time()).filter(is_taken_today=False)
+    qs_overdue = Reminder.objects.filter(when_to_take__lte=datetime.datetime.now().time()).filter(is_taken_today=False).order_by('when_to_take')
+    qs_scheduled = Reminder.objects.filter(when_to_take__gt=datetime.datetime.now().time()).filter(is_taken_today=False).order_by('when_to_take')
 
+    overdue_list = []
     if len(qs_overdue) > 0:
+        # if user 가 보호자임
         ask_to_call = 1
+        
+        for obj in qs_overdue:
+            pill_obj = get_object_or_404(Pill, id=obj.pill_id.id)
+            pillname_dose_str = pill_obj.name + " " + str(obj.dose) + "정, "
+            response_mesg += str(obj.when_to_take) + "에 " + pillname_dose_str
+            overdue_list.append(pillname_dose_str)
+        
+        response_mesg += "을 아직 복용하지 않았습니다."
 
+    if len(qs_scheduled) > 0:
+        for obj in qs_scheduled:
+            pill_obj = get_object_or_404(Pill, id=obj.pill_id.id)
+            response_mesg += str(obj.when_to_take) + "에 " + pill_obj.name + " " + str(obj.dose) + "정, "
+        response_mesg += "을 복용할 예정입니다."
+
+    if ask_to_call:
+        response_mesg += "피보호자에게 문자를 보내 " + ''.join(overdue_list) + "복용을 상기하시겠습니까?"
+
+    if len(qs_overdue) == 0 and len(qs_scheduled) == 0:
+        response_mesg = "오늘 계획된 모든 약을 복용하셨습니다."
     
     context['output']['response_mesg'] = response_mesg
     context['output']['ask_to_call'] = str(ask_to_call)
     
-    pprint(context)
+    pprint.pprint(context)
+    return Response(context)
+
+@api_view(['POST'])
+def ask_to_call(request):
+    parse_play_request(request.data)
+
+    context = {
+        "version": version,
+        "resultCode": "OK",
+        "output": output,
+        "directives":[]
+    }
+
     return Response(context)
