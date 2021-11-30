@@ -1,4 +1,5 @@
 import re
+from typing_extensions import Required
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -32,7 +33,7 @@ class Reminder(TimestampedModel):
 
     when_to_take = models.TimeField(auto_now=False)
 
-    taken_time = models.TimeField(auto_now=False)
+    taken_time = models.TimeField(blank=True)
     is_taken_today = models.BooleanField(default=False)
     dose_taken_today = models.IntegerField(default=0)
 

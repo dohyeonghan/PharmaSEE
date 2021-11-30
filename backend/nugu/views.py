@@ -11,17 +11,28 @@ from django.shortcuts import get_object_or_404
 import pprint
 import datetime
 
-@api_view(['POST'])
-def answer_taken_pills(request):
-    pprint.pprint(request.data)
+version = ""
+action = {}
+action_name = ""
+params = {}
+output = {}
+
+def parse_play_request(body):
+    global version, action, action_name, params, output
     try:
-        version = request.data.get('version')
-        action = request.data.get('action')
+        version = body.get('version')
+        action = body.get('action')
         action_name = action.get('actionName')
         params = action.get('parameters')
         output = dict(zip(params.keys(), [val.get('value') for val in params.values()]))
     except:
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def answer_taken_pills(request):
+    pprint.pprint(request.data)
+
+    parse_play_request(request.data)
 
     if action_name != "answer.taken_pills":
         return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -35,16 +46,23 @@ def answer_taken_pills(request):
 
     taken_list = ""
     status_mesg = ""
+
+    # if len(Reminder.objects.filter(User=~~~)) == 0:
+    if len(Reminder.objects.all()) == 0:
+        status_mesg = "복용 리스트에 등록된 약이 없습니다."
+        context['output']['taken_list'] = taken_list
+        context['output']['status_mesg'] = status_mesg
+        return Response(context)
     
     qs_taken = Reminder.objects.filter(is_taken_today=True)
-    qs_forgot = Reminder.objects.filter(is_taken_today=False)
+    qs_overdue = Reminder.objects.filter(is_taken_today=False).filter(when_to_take__lte=datetime.datetime.now().time())
 
     num_taken = len(qs_taken)
-    num_forgot = len(qs_forgot)
+    num_forgot = len(qs_overdue)
     total_pills = num_taken + num_forgot
 
     if total_pills == 0:
-        status_mesg = "복용 예정된 약이 없습니다. 등록을 부탁드립니다"
+        status_mesg = "오늘 복용한 약이 없습니다."
 
     elif num_taken > 0:
         is_late = False
@@ -80,3 +98,39 @@ def answer_taken_pills(request):
 @api_view(['POST'])
 def answer_not_taken_pills(request):
     pprint(request.data)
+
+    parse_play_request(request.data)
+
+    context = {
+        "version": version,
+        "resultCode": "OK",
+        "output": output,
+        "directives":[]
+    }
+
+    # 오전 2시에 약 A 2정을 아직 복용하지 않았습니다. 피보호자에게 전화를 거시겠습니까?(overdue)
+    # 오후 9시에 약B 3정을 복용해야합니다. (scheduled)
+    # 오늘 계획된 모든 약을 먹었습니다. (alll_taken)
+
+    response_mesg = ""
+    ask_to_call = 0
+
+    # if len(Reminder.objects.filter(User=~~~)) == 0:
+    if len(Reminder.objects.all()) == 0:
+        response_mesg = "복용 리스트에 등록된 약이 없습니다."
+        context['output']['response_mesg'] = response_mesg
+        context['output']['ask_to_call'] = str(ask_to_call)
+        return Response(context)
+    
+    qs_overdue = Reminder.objects.filter(when_to_take__lte=datetime.datetime.now().time()).filter(is_taken_today=False)
+    qs_scheduled = Reminder.objects.filter(when_to_take_gt=datetime.datetime.now().time()).filter(is_taken_today=False)
+
+    if len(qs_overdue) > 0:
+        ask_to_call = 1
+
+    
+    context['output']['response_mesg'] = response_mesg
+    context['output']['ask_to_call'] = str(ask_to_call)
+    
+    pprint(context)
+    return Response(context)
