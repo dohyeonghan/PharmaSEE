@@ -76,6 +76,7 @@ def answer_taken_pills(request):
             diff_hours = int((taken_time - when_to_take).total_seconds() / 3600)
             if diff_hours > 2:
                 is_late = True
+
         taken_list += "을 복용하셨습니다."
 
         if is_late:
