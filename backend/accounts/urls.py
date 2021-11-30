@@ -9,4 +9,5 @@ urlpatterns =[
     #path('token/verify/', verify_jwt_token),
     path('follow/', views.user_follow, name='user_follow'),
     path('unfollow/', views.user_unfollow, name='user_unfollow'),
+    path('search/', include('haystack.urls')),
 ]

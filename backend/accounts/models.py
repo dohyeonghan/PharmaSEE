@@ -10,10 +10,11 @@ class User(AbstractUser):
     follower_set = models.ManyToManyField('self', blank = True)
     following_set = models.ManyToManyField('self', blank=True)
 
-    @property
-    def name(self):
-        return f"{self.first_name} {self.last_name}".strip()
+    # @property
+    # def name(self):
+    #     return f"{self.first_name} {self.last_name}".strip()
 
-
+    def __str__(self):
+        return self.username
 
 

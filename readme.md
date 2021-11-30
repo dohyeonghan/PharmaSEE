@@ -25,6 +25,9 @@ JWT 토큰 o<br>
         + serializer : pillserializer, reminderserializer
         + url : router 사용 -> api/pills, api/reminders
         + view : modelviewset 사용 
++ [검색기능]
+  + user 검색 -> 보호자 : haystack 사용
+  + pill 검색 -> 증상(효과) : q 객체 사용
 ### 머신러닝 모델, UI (경환)
 배포(미정)<br>
 도커 vs VM<br>

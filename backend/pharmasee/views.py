@@ -3,6 +3,9 @@ from .models import Pill,Reminder
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import AllowAny
 from .serializers import PillSerializer,ReminderSerializer
+from django.db.models import Q
+import django_filters.rest_framework
+from rest_framework import generics, filters
 
 class PillViewSet(ModelViewSet):
     queryset = Pill.objects.all()
@@ -14,3 +17,8 @@ class ReminderViewSet(ModelViewSet):
     serializer_class = ReminderSerializer
     permission_classes = [AllowAny]
 
+class PillListView(generics.ListAPIView):
+    queryset = Pill.objects.all()
+    serializer_class = PillSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name','effect','side_effect']
