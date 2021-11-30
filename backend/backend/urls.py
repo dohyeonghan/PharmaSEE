@@ -7,6 +7,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     path('nugu/', include('nugu.urls')),
+    path('pill_ai/', include('pill_ai.urls')),
     path('', include('pharmasee.urls')),
 ]
 if settings.DEBUG:
