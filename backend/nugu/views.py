@@ -173,3 +173,7 @@ def ask_to_call(request):
     }
 
     return Response(context)
+
+@api_view(['GET'])
+def health(request):
+    return Response("OK")
