@@ -33,7 +33,7 @@ class Reminder(TimestampedModel):
 
     when_to_take = models.TimeField(auto_now=False)
 
-    taken_time = models.TimeField(blank=True)
+    taken_time = models.TimeField(auto_now=False)
     is_taken_today = models.BooleanField(default=False)
     dose_taken_today = models.IntegerField(default=0)
 
