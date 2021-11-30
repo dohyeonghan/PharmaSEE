@@ -31,6 +31,7 @@ class Reminder(TimestampedModel):
     dose = models.CharField(max_length=100)
 
     when_to_take = models.TimeField(auto_now=False)
+
     taken_time = models.TimeField(auto_now=False)
     is_taken_today = models.BooleanField(default=False)
     dose_taken_today = models.IntegerField(default=0)
