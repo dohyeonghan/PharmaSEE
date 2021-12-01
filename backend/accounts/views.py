@@ -5,7 +5,9 @@ from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.generics import CreateAPIView, get_object_or_404
 from rest_framework.response import Response
-from .serializers import SignupSerializer
+from .serializers import SignupSerializer, UserSerializer
+from rest_framework import generics, filters
+from .models import User
 
 class SignupView(CreateAPIView):
     model = get_user_model()
@@ -29,3 +31,9 @@ def user_unfollow(request):
     request.user.following_set.remove(follow_user)
     follow_user.follower_set.remove(request.user)
     return Response(status.HTTP_204_NO_CONTENT)
+
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username','first_name','last_name','email']

@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     "corsheaders",
 
     "rest_framework",
+    'haystack',
+    'django_filters',
 
     # local apps
     'pharmasee',
@@ -133,14 +135,16 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 REST_FRAMEWORK = {
-     'DEFAULT_PERMISSION_CLASSES': [
-         'rest_framework.permissions.AllowAny',
-     ],
-     'DEFAULT_AUTHENTICATION_CLASSES': [
-         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-         'rest_framework.authentication.SessionAuthentication',
-         'rest_framework.authentication.BasicAuthentication',
-         ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend',
+    ],
  }
 
 # JWT_AUTH = {
@@ -172,3 +176,11 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
+
+WHOOSH_INDEX=os.path.join(BASE_DIR, 'whoosh_index')
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': WHOOSH_INDEX,
+    },
+}

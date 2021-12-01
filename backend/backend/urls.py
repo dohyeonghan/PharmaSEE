@@ -8,8 +8,9 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('nugu/', include('nugu.urls')),
     path('pill_ai/', include('pill_ai.urls')),
-    path('', include('pharmasee.urls')),
+    path('pharmasee/', include('pharmasee.urls')),
 ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     import debug_toolbar

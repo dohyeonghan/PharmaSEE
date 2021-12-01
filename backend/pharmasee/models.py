@@ -1,5 +1,5 @@
 import re
-from typing_extensions import Required
+
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -22,6 +22,8 @@ class Pill(TimestampedModel):
 
     class Meta:
         ordering = ["-id"]
+
+
 
 class Reminder(TimestampedModel):
     title = models.CharField(max_length=100)

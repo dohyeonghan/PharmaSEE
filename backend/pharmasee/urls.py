@@ -10,4 +10,5 @@ router.urls
 
 urlpatterns =[
     path('api/', include(router.urls)),
+    path('search/', views.PillListView.as_view(), name='pill_list')
 ]
