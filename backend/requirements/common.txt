@@ -3,3 +3,7 @@ pillow
 djangorestframework
 django-cors-headers
 djangorestframework-jwt
+pandas 
+tensorflow
+django_filters~=2.2
+haystack
