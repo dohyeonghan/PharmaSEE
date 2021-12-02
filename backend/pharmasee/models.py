@@ -24,7 +24,6 @@ class Pill(TimestampedModel):
         ordering = ["-id"]
 
 
-
 class Reminder(TimestampedModel):
     title = models.CharField(max_length=100)
     user_id = models.ForeignKey(
