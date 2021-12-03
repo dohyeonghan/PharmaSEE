@@ -4,6 +4,6 @@ djangorestframework
 django-cors-headers
 djangorestframework-jwt
 pandas 
---no-cache-dir tensorflow
+
 django_filters~=2.2
 haystack
