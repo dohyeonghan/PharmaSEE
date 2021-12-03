@@ -1,3 +1,3 @@
 from .common import *
 
-ALLOWED_HOSTS =['52.79.249.113']
+ALLOWED_HOSTS =['3.37.42.228']
