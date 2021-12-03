@@ -5,5 +5,5 @@ django-cors-headers
 djangorestframework-jwt
 pandas 
 
-django_filters
+django-filters
 haystack
