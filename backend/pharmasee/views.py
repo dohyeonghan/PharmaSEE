@@ -14,6 +14,7 @@ class PillViewSet(ModelViewSet):
 
 class ReminderViewSet(ModelViewSet):
     queryset = Reminder.objects.all()
+    # qeuryset = Reminder.objects.filter(user_id=2)
     serializer_class = ReminderSerializer
     permission_classes = [AllowAny]
 
@@ -23,4 +24,4 @@ class PillListView(generics.ListAPIView):
     # filter_backends = [filters.SearchFilter]
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     filterset_fields = ['name', 'effect']
-    search_fields = ['name','effect','side_effect']
+    search_fields = ['name','effect']

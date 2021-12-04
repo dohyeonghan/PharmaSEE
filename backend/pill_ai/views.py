@@ -9,7 +9,7 @@ import os
 import pandas as pd
 import urllib.request
 import threading
-import tensorflow as tf
+# import tensorflow as tf
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -73,6 +73,8 @@ def populate_pills(csv_url):
         obj.image_dir.save(os.path.basename(demo_pills_images[idx]), byte_file)
         obj.save()
     
+    print("Pill Create Complete!")
+    
 
 
 @api_view(['POST'])
@@ -83,11 +85,9 @@ def pill_ai_identify(request):
         t.setDaemon(False)
         t.start()
         return Response({})
-        # populate_pills(csv_url)
 
-    # model_url  = os.path.join(settings.STATIC_ROOT, 'h5/best_model.h5')
-    # with tf.device('/cpu:0'):
-        # model = tf.keras.models.load_model(model_url, custom_objects={'KerasLayer': hub.KerasLayer})
-    # print(model.summary())
+    body = request.data
+    print(body)
+    # image = body.get('')
 
     return Response({})
