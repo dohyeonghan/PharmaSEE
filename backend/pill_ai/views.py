@@ -9,7 +9,6 @@ import os
 import pandas as pd
 import urllib.request
 import threading
-# import tensorflow as tf
 import warnings
 warnings.filterwarnings('ignore')
 

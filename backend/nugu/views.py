@@ -162,17 +162,8 @@ def answer_not_taken_pills(request):
     return Response(context)
 
 @api_view(['POST'])
-def ask_to_call(request):
-    parse_play_request(request.data)
-
-    context = {
-        "version": version,
-        "resultCode": "OK",
-        "output": output,
-        "directives":[]
-    }
-
-    return Response(context)
+def answer_total_status(request):
+    pass
 
 @api_view(['GET'])
 def health(request):
