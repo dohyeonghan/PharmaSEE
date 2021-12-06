@@ -23,5 +23,5 @@ class PillListView(generics.ListAPIView):
     serializer_class = PillSerializer
     # filter_backends = [filters.SearchFilter]
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
-    filterset_fields = ['name', 'effect','image_dir']
-    search_fields = ['name','effect','image_dir']
+    filterset_fields = ['name', 'effect']
+    search_fields = ['name','effect']
