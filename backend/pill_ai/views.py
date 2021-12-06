@@ -12,7 +12,6 @@ import pandas as pd
 import urllib.request
 import threading
 from PIL import Image
-# import tensorflow as tf
 import warnings
 warnings.filterwarnings('ignore')
 
