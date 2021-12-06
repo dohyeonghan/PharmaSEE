@@ -62,20 +62,26 @@ def answer_taken_pills(request):
     elif num_taken > 0:
         for obj in qs_taken:
             pill_obj = get_object_or_404(Pill, id=obj.pill_id.id)
-            stauts_mesg +=  str(obj.taken_time) + '에 ' + pill_obj.name +  " " + str(obj.dose_taken_today) + "정, " 
+            if response_taken: 
+                response_taken += ", "
+            ampm = '오전' if obj.when_to_take.strftime("%p") == "AM" else "오후"
+            response_taken +=  ampm + obj.taken_time.strftime(" %I시 %M분") + '에 ' + pill_obj.name +  " " + str(obj.dose_taken_today) + "정" 
             
             dummy = datetime.date(1, 1, 1)
             when_to_take = datetime.datetime.combine(dummy, obj.when_to_take)
             taken_time = datetime.datetime.combine(dummy, obj.taken_time)
-            diff_hours = int((taken_time - when_to_take).total_seconds() / 3600)
+            diff_hours = (taken_time - when_to_take).total_seconds() / 3600
             
             if diff_hours > 2:
-                late_pills += str(obj.when_to_take) + '에 예정된 ' + pill_obj.name + " " + str(obj.dose) + "정, "     
+                if late_pills:
+                    late_pills += ", "
+                ampm = '오전' if obj.when_to_take.strftime("%p") == "AM" else "오후"
+                late_pills += ampm + obj.when_to_take.strftime(" %I시 %M분") + '에 예정된 ' + pill_obj.name + " " + str(obj.dose) + "정"     
 
         response_taken += "을 복용하셨습니다."
 
         if late_pills:
-            response_taken += (late_pills + "을 2시간 이상 지체하여 복용하셨으니 주의 부탁드립니다.")
+            response_taken += (late_pills + "을, 2시간 이상 늦게 복용하셨으니 주의 부탁드립니다.")
 
     else:
         return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
@@ -99,6 +105,8 @@ def answer_not_taken_pills(request):
     }
 
     response_not_taken = ""
+    response_overdue = ""
+    response_scheduled = ""
 
     # if len(Reminder.objects.filter(User=~~~)) == 0:
     if len(Reminder.objects.all()) == 0:
@@ -112,18 +120,26 @@ def answer_not_taken_pills(request):
     if len(qs_overdue) > 0:        
         for obj in qs_overdue:
             pill_obj = get_object_or_404(Pill, id=obj.pill_id.id)
-            response_not_taken += str(obj.when_to_take) + "에 예정된 " + pill_obj.name + " " + str(obj.dose) + "정, "
+            if response_overdue:
+                response_overdue += ", "
+            ampm = '오전' if obj.when_to_take.strftime("%p") == "AM" else "오후"
+            response_overdue += ampm + obj.when_to_take.strftime(" %I시 %M분") + "에 예정된 " + pill_obj.name + " " + str(obj.dose) + "정"
         
-        response_not_taken += "을 아직 복용하지 않았으니, 확인 부탁드립니다."
+        response_overdue += "을 아직 복용하지 않았으니, 확인 부탁드립니다."
 
     if len(qs_scheduled) > 0:
         for obj in qs_scheduled:
             pill_obj = get_object_or_404(Pill, id=obj.pill_id.id)
-            response_not_taken += str(obj.when_to_take) + "에 " + pill_obj.name + " " + str(obj.dose) + "정, "
-        response_not_taken += "을 복용할 예정입니다."
+            if response_scheduled:
+                response_scheduled += ", "
+            ampm = '오전' if obj.when_to_take.strftime("%p") == "AM" else "오후"
+            response_scheduled += ampm + obj.when_to_take.strftime("%I시 %M분") + "에 " + pill_obj.name + " " + str(obj.dose) + "정"
+        response_scheduled += "을 복용할 예정입니다."
 
     if len(qs_overdue) == 0 and len(qs_scheduled) == 0:
         response_not_taken = "오늘 예정된 모든 약을 복용하셨습니다."
+    else:
+        response_not_taken = response_overdue + response_scheduled
     
     context['output']['response_not_taken'] = response_not_taken
     
@@ -143,11 +159,11 @@ def answer_total_status(request):
         "directives":[]
     }
 
-    response_total_stauts = ""
+    response_total_status = ""
 
     if len(Reminder.objects.all()) == 0:
         response_total_status = "복용 리스트에 등록된 약이 없습니다."
-        context['output']['response_total_status'] = response_total_stauts
+        context['output']['response_total_status'] = response_total_status
         return Response(context)
 
     qs_taken = Reminder.objects.filter(is_taken_today=True).order_by('taken_time')
@@ -163,43 +179,59 @@ def answer_total_status(request):
     elif num_taken > 0:
         for obj in qs_taken:
             pill_obj = get_object_or_404(Pill, id=obj.pill_id.id)
-            response_taken +=  str(obj.taken_time) + '에 ' + pill_obj.name +  " " + str(obj.dose_taken_today) + "정, " 
+            if response_taken:
+                response_taken += ", "
+            ampm = '오전' if obj.when_to_take.strftime("%p") == "AM" else "오후"
+            response_taken +=  ampm + obj.taken_time.strftime(" %I시 %M분") + '에 ' + pill_obj.name +  " " + str(obj.dose_taken_today) + "정" 
             
             dummy = datetime.date(1, 1, 1)
             when_to_take = datetime.datetime.combine(dummy, obj.when_to_take)
             taken_time = datetime.datetime.combine(dummy, obj.taken_time)
-            diff_hours = int((taken_time - when_to_take).total_seconds() / 3600)
+            diff_hours = (taken_time - when_to_take).total_seconds() / 3600
             
             if diff_hours > 2:
-                late_pills += str(obj.when_to_take) + '에 예정된 ' + pill_obj.name + " " + str(obj.dose) + "정, "     
+                if late_pills:
+                    late_pills += ", "
+                ampm = '오전' if obj.when_to_take.strftime("%p") == "AM" else "오후"
+                late_pills += ampm+ obj.when_to_take.strftime(" %I시 %M분") + '에 예정된 ' + pill_obj.name + " " + str(obj.dose) + "정"     
 
         response_taken += "을 복용하셨습니다."
 
         if late_pills:
-            response_taken += (late_pills + "을 2시간 이상 지체하여 복용하셨으니 주의 부탁드립니다.")
+            response_taken += (late_pills + "을, 2시간 이상 늦게 복용하셨으니 주의 부탁드립니다.")
 
     response_total_status += response_taken
 
     response_not_taken = ""
+    response_overdue = ""
+    response_scheduled = ""
     if len(qs_overdue) > 0:        
         for obj in qs_overdue:
             pill_obj = get_object_or_404(Pill, id=obj.pill_id.id)
-            response_not_taken += str(obj.when_to_take) + "에 예정된 " + pill_obj.name + " " + str(obj.dose) + "정, "
+            if response_overdue:
+                response_overdue += ", "
+            ampm = '오전' if obj.when_to_take.strftime("%p") == "AM" else "오후"
+            response_overdue += ampm + obj.when_to_take.strftime(" %I시 %M분") + "에 예정된 " + pill_obj.name + " " + str(obj.dose) + "정"
         
-        response_not_taken += "을 아직 복용하지 않았으니, 확인 부탁드립니다."
+        response_overdue += "을 아직 복용하지 않았으니, 확인 부탁드립니다."
 
     if len(qs_scheduled) > 0:
         for obj in qs_scheduled:
             pill_obj = get_object_or_404(Pill, id=obj.pill_id.id)
-            response_not_taken += str(obj.when_to_take) + "에 " + pill_obj.name + " " + str(obj.dose) + "정, "
-        response_not_taken += "을 복용할 예정입니다."
+            if response_scheduled:
+                response_scheduled += ", "
+            ampm = '오전' if obj.when_to_take.strftime("%p") == "AM" else "오후"
+            response_scheduled += ampm+ obj.when_to_take.strftime(" %I시 %M분") + "에 " + pill_obj.name + " " + str(obj.dose) + "정"
+        response_scheduled += "을 복용할 예정입니다."
 
     if len(qs_overdue) == 0 and len(qs_scheduled) == 0:
         response_not_taken = "오늘 예정된 모든 약을 복용하셨습니다."
+    else:
+        response_not_taken = response_overdue + response_scheduled
     
     response_total_status += response_not_taken
 
-    context['output']['response_total_status'] = response_total_stauts
+    context['output']['response_total_status'] = response_total_status
     return Response(context)
 
 
