@@ -1,14 +1,17 @@
+from io import StringIO
 from rest_framework.decorators import api_view
 from django.conf import settings
 from rest_framework.response import Response
 from django.core.files import File
 
 from pharmasee.models import Pill
+from .forms import UploadFileForm
 
 import os
 import pandas as pd
 import urllib.request
 import threading
+from PIL import Image
 # import tensorflow as tf
 import warnings
 warnings.filterwarnings('ignore')
@@ -76,18 +79,39 @@ def populate_pills(csv_url):
     print("Pill Create Complete!")
     
 
+def handle_uploaded_file(file):
+    pass
 
 @api_view(['POST'])
 def pill_ai_identify(request):
-    if Pill.objects.count() < 10:
-        csv_url = os.path.join(settings.STATIC_ROOT, 'csv/pills.csv')
-        t = threading.Thread(target=populate_pills, args=[csv_url])
-        t.setDaemon(False)
-        t.start()
-        return Response({})
+    if request.method == 'POST':
+        if Pill.objects.count() < 10:
+            csv_url = os.path.join(settings.STATIC_ROOT, 'csv/pills.csv')
+            t = threading.Thread(target=populate_pills, args=[csv_url])
+            t.setDaemon(False)
+            t.start()
+            return Response({})
 
-    body = request.data
-    print(body)
-    # image = body.get('')
+
+        
+        # print(request.data.dict().keys())
+        file_string = request.data.get('file')
+        file_obj = StringIO()
+        image = Image.new()
+        image.save(file_obj, "png")
+        # print(request.POST)
+        # print(request.FILES)
+        # print(request.FILES['images'])
+        # f = request.data.get('file')
+        # with open('image.png', 'wb+') as dest:
+        #     dest.write(f)
+        # image = Image.open(request.data.get('file'))
+        # image.save("uploaded_file.png")
+
+        
+        # form = UploadFileForm(request.POST, request.FILES)
+        # if form.is_valid():
+        #     context = handle_uploaded_file(request.FILES['file'])
+        #     return Response(context)
 
     return Response({})
