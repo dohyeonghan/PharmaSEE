@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'pharmasee',
     'accounts',
     'nugu',
+    'pill_ai',
 ]
 
 MIDDLEWARE = [

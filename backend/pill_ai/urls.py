@@ -1,6 +1,7 @@
-from django.urls import path
-from .views import pill_ai_identify
+from django.urls import path, include
+
+from .views import DnnImageView
 
 urlpatterns = [
-    path('identify/', pill_ai_identify, name='pill-ai-indentify')
+    path('img_upload/', DnnImageView.as_view(), name='img-upload')
 ]
