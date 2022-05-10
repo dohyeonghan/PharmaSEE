@@ -1,9 +1,4 @@
-## [task list]
-reminder API <br> 
-pill API o<br> 
-회원가입 API o<br> 
-JWT 토큰 o<br> 
-보호자 피보호자 연결 API<br>
+https://www.notion.so/53bf758ba1b24610986c31c5a38a9711#e4ed439e9d9f41d9be11dfeb118fb2a0
 
 ## app 단위 개발
 ### nugu proxy, 배포(다영)
