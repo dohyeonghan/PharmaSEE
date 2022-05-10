@@ -1,4 +1,5 @@
-![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/346efadb-519a-4e05-8970-c4db1d006569/Untitled.png)
+![Untitled (1)](https://user-images.githubusercontent.com/62049139/167681672-3c343366-6a39-44b9-8f15-e4bf00437caa.png)
+
 
 ## app 단위 개발
 ### nugu proxy, 배포(다영)
