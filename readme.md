@@ -1,4 +1,4 @@
-https://www.notion.so/53bf758ba1b24610986c31c5a38a9711#e4ed439e9d9f41d9be11dfeb118fb2a0
+![Untitled](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/346efadb-519a-4e05-8970-c4db1d006569/Untitled.png)
 
 ## app 단위 개발
 ### nugu proxy, 배포(다영)
