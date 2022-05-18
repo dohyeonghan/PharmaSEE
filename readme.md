@@ -36,10 +36,6 @@
 
 
 
-### 머신러닝 모델, UI (경환)
-배포(미정)<br>
-도커 vs VM<br>
-
 [폴더 구조] <br>
 backend - config <br>
 accounts - custom user signup, login, create ...<br>
